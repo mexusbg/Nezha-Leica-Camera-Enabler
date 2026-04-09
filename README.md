@@ -11,7 +11,7 @@ A lightweight Magisk/KernelSU module to enable Leica features for Xiaomi 17 Ultr
 ## Credits & Attribution
 
 - **Discovery:** Special thanks to **Max Weinbach** for discovering these flags. 
-  - [Original X Post](https://x.com/mweinbach/status/2038763588655993271)
+  - [Original X Post by Max Weinbach](https://x.com/mweinbach/status/2038763588655993271)
 - **Author:** mexus
 
 ## Installation
