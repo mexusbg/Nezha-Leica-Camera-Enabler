@@ -1,0 +1,14 @@
+# Build artifacts
+*.zip
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Local editor settings
+.vscode/
+.idea/
+*.swp
+
+# KernelSU/Magisk temporary files (if you test locally)
+/out/

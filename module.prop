@@ -1,0 +1,6 @@
+id=leica_camera_enabler
+name=Leica Camera Enabler (Safe)
+version=v1.0
+versionCode=1
+author=mexus
+description=Safely sets Leica camera properties without spoofing model or attestation flags.
