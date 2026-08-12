@@ -62,27 +62,33 @@ cd lsposed-module
 
 APK: `app/build/outputs/apk/debug/app-debug.apk` (debug-signed → installable).
 
-Dependencies: the Xposed API is `compileOnly` from `https://api.xposed.info/` (not
-bundled — LSPOSED provides it at runtime); **DexKit** (`org.luckypray:dexkit`) *is*
-bundled (native lib, ~4 MB APK) and powers the camera watermark hook.
+This is a **modern Xposed module** (libxposed API 100+): it extends `XposedModule`,
+hooks via the `hook(method).intercept(chain -> …)` interceptor API, and is configured
+by `app/src/main/resources/META-INF/xposed/{module.prop,java_init.list,scope.list}`
+(not the legacy manifest meta-data). **Requires an LSPOSED that supports API 100+.**
+
+Dependencies: the API is `compileOnly 'io.github.libxposed:api:102.0.0'` (Maven
+Central, provided by LSPOSED at runtime — not bundled); **DexKit**
+(`org.luckypray:dexkit`) *is* bundled (native lib, ~4 MB APK) and powers the camera
+watermark hook. libxposed provides no `XposedHelpers`, so reflection is done by hand.
 
 ## Install
 
 1. Install the APK.
 2. In the LSPOSED manager: enable the module, tick scope **Gallery editor**
    (`com.miui.mediaeditor`), **Camera** (`com.android.camera`), and **Settings**
-   (`com.android.settings`).
+   (`com.android.settings`). (Recommended scope is declared in `scope.list`.)
 3. **Force-stop** all three (or reboot) so the hooks load.
-4. Verify: the 6 Leica frames apply in the gallery editor; the "Camera ring" entry
-   is gone from both the camera settings and system Settings; and the watermark
-   reads "XIAOMI 17 Ultra by Leica" (camera + gallery).
+4. Verify: the non-working Leica frames are gone from the gallery picker; the
+   "Camera ring" entry is gone from both the camera settings and system Settings;
+   and the watermark reads "XIAOMI 17 Ultra by Leica" (camera + gallery).
 
 ## If a HyperOS update breaks it
 
-The hook matches by method *shape* (static, 3 params, 2nd is `String`, returns
-`Di.a`) rather than fixed obfuscated names, so minor rebuilds usually survive.
-If names shift wholesale, `logcat -s LeicaFramePatcher` prints the class-lookup
-result and dumps candidate methods. Re-map `CLS_GATE` / `CLS_SUPPORT` / `CLS_VERDICT`
-in `HookEntry.java`. Runtime markers to re-identify the gate class: the XOR-21123
-string helper `E0.b.z`, family-tag literals `leica_series` / `xiaomi_series` /
-`lcc_series`, and EXIF keys `XiaomiProduct`, `themeCustomize`, `ExposureBiasValue`.
+Hooks match by method *shape* where possible (e.g. the eligibility gate: static,
+3 params, 2nd is `String`, returns `Di.a`), so minor rebuilds usually survive.
+Logs go to the LSPOSED log — `adb logcat | grep LeicaFramePatcher` (tag
+`LSPosedFramework`) — and print class-lookup results and candidate methods when a
+name is gone. Re-map the `CLS_*` / obfuscated field-name constants in `HookEntry.java`.
+Markers to re-identify the gate class: family-tag literals `leica_series` /
+`xiaomi_series` / `lcc_series`, and EXIF keys `XiaomiProduct`, `themeCustomize`.

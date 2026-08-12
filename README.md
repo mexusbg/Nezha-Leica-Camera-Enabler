@@ -32,7 +32,7 @@ for the Xiaomi 17 Ultra (nezha).
 ## Requirements
 
 - Xiaomi 17 Ultra (nezha), rooted with Magisk or KernelSU / KSU-Next
-- LSPOSED (or a compatible Xposed framework) installed and active
+- A recent LSPOSED (Xposed **API 100+** — the companion is a modern libxposed module)
 
 ## Installation
 
