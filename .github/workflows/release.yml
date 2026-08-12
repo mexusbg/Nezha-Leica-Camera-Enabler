@@ -16,20 +16,59 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Build LSPOSED APK
+        run: |
+          cd lsposed-module
+          chmod +x gradlew
+          ./gradlew :app:assembleDebug --no-daemon --stacktrace
+
+      - name: Bundle APK into module
+        run: |
+          cp lsposed-module/app/build/outputs/apk/debug/app-debug.apk module/LeicaFramePatcher.apk
+
       - name: Create Zip
         run: |
-          # Zips the core files into your custom named zip
-          zip -r nezha_leica_camera_enabler_by_mexus.zip module.prop system.prop README.md
+          # Zip from inside module/ so module.prop sits at the archive root.
+          # -X strips Info-ZIP extra fields (UT/ux); without it Magisk's installer
+          # rejects the archive even though KernelSU accepts it.
+          cd module
+          zip -X -r ../nezha_leica_camera_enabler_by_mexus.zip . -x '.*'
 
+      - name: Verify structure
+        run: |
+          unzip -l nezha_leica_camera_enabler_by_mexus.zip
+          for f in \
+            'META-INF/com/google/android/update-binary' \
+            'customize.sh' \
+            'LeicaFramePatcher.apk' \
+            'module.prop' \
+            'system.prop'; do
+            unzip -l nezha_leica_camera_enabler_by_mexus.zip | grep -q "$f" \
+              || { echo "MISSING: $f"; exit 1; }
+          done
+
+      # Every build: keep the zip as an Actions artifact (dev builds).
+      # NOTE: GitHub always wraps artifacts in its own zip, so the download from
+      # the Actions tab is a zip-in-zip — unzip once to get the flashable zip.
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: nezha_leica_camera_enabler
           path: nezha_leica_camera_enabler_by_mexus.zip
 
+      # Tagged builds only (v*): attach the raw, single flashable zip to the Release.
       - name: Release
-        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
         with:
           files: nezha_leica_camera_enabler_by_mexus.zip
         env:

@@ -1,0 +1,15 @@
+# Shell scripts MUST stay LF or they fail to run on Linux (CI) / when flashed.
+module/META-INF/com/google/android/update-binary text eol=lf
+module/META-INF/com/google/android/updater-script text eol=lf
+module/customize.sh text eol=lf
+*.prop text eol=lf
+*.sh text eol=lf
+lsposed-module/gradlew text eol=lf
+
+# Windows launcher stays CRLF.
+lsposed-module/gradlew.bat text eol=crlf
+
+# Never line-ending-convert binaries.
+*.jar binary
+*.apk binary
+*.webp binary

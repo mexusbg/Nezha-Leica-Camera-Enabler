@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Leica Frame Patcher</string>
+    <string name="xposed_description">Xiaomi 17 Ultra (nezha) Leica tweaks: unlocks the 6 blocked Leica gallery frames (bypasses the per-photo EXIF eligibility check), hides the non-functional camera control-ring settings, and changes the watermark device name to "Xiaomi 17 Ultra by Leica" in both the camera and the gallery editor.</string>
+
+    <string-array name="xposed_scope">
+        <item>com.miui.mediaeditor</item>
+        <item>com.android.camera</item>
+        <item>com.android.settings</item>
+    </string-array>
+</resources>

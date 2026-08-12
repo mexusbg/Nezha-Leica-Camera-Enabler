@@ -1,0 +1,22 @@
+# Build artifacts
+*.zip
+*.apk
+
+# LSPOSED module build (Gradle)
+lsposed-module/local.properties
+lsposed-module/.gradle/
+lsposed-module/build/
+lsposed-module/app/build/
+lsposed-module/captures/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Local editor settings
+.vscode/
+.idea/
+*.swp
+
+# KernelSU/Magisk temporary files (if you test locally)
+/out/
